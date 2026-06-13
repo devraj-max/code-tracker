@@ -21,21 +21,35 @@ function Home() {
 
 
   //  fetch function (reusable)
-  const fetchProblems = () => {
-    setLoading(true)
-    const user = await authService.getCurrentUser()
-    service.getProblems(user.$id).then((res) => {
-      console.log(res)
 
-      if (res) {
-        setProblems(res.documents)
-      } else {
-        setProblems([])
-      }
+  
+const fetchProblems = async () => {
+  setLoading(true)
 
-      setLoading(false)
-    })
+  const user = await authService.getCurrentUser()
+
+  if (!user) {
+    setProblems([])
+    setLoading(false)
+    return
   }
+
+  const res = await service.getProblems(user.$id)
+
+  if (res) {
+    setProblems(res.documents)
+  } else {
+    setProblems([])
+  }
+
+  setLoading(false)
+}
+
+
+
+
+
+
 
   useEffect(() => {
     fetchProblems()

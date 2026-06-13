@@ -21,6 +21,7 @@ export class Service{
                 Permission.read(Role.user(userId)),
                 Permission.update(Role.user(userId)),
                 Permission.delete(Role.user(userId)),
+                Permission.create(Role.user(userId)),
             ]
         )
     }catch (error){
