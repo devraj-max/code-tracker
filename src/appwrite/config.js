@@ -10,39 +10,53 @@ export class Service{
         this.client.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
         this.databases=new Databases(this.client);
     }
-   async createProblem(data, userId){
+  async createProblem(data){
     try{
+        const user = await authService.getCurrentUser()
+
+        if (!user) throw new Error("User not logged in")
+
         return await this.databases.createDocument(
             conf.appwriteDatabaseId,
             conf.appwriteCollectionId,
             ID.unique(),
-            data,
+            {
+                ...data,
+                userId: user.$id,
+            },
             [
-                Permission.read(Role.user(userId)),
-                Permission.update(Role.user(userId)),
-                Permission.delete(Role.user(userId)),
-                Permission.create(Role.user(userId)),
+                Permission.read(Role.user(user.$id)),
+                Permission.update(Role.user(user.$id)),
+                Permission.delete(Role.user(user.$id)),
             ]
         )
     }catch (error){
         console.log("Appwrite service :: createProblem :: error", error);
     }
 }
-       async getProblems(){
-        try{
-            return await this.databases.listDocuments(
-                conf.appwriteDatabaseId,
-                conf.appwriteCollectionId,
-                   [
-              Query.equal("userId", userId)  //  MAIN FIX
-                  ]
-               
-            )
-        }catch (error){
-            console.log("Appwrite service :: getProblems:: error",error);
-            return false;
-        }
+
+
+async getProblems(userId){
+    try{
+        return await this.databases.listDocuments(
+            conf.appwriteDatabaseId,
+            conf.appwriteCollectionId,
+            [
+                Query.equal("userId", userId) //  now valid main fix yha krna tha
+                
+            ]
+        )
+    }catch (error){
+        console.log("Appwrite service :: getProblems:: error", error);
+        return false;
     }
+}
+
+
+
+
+
+
     async deleteProblem(slug){
         try{
             await this.databases.deleteDocument(
