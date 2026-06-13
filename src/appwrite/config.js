@@ -1,5 +1,6 @@
 import conf from "../conf/conf";
-import { Client,ID,Storage,Query, Databases} from "appwrite";
+import { Client,ID,Storage,Query, Databases,Permission,Role} from "appwrite";
+import { Query } from "appwrite";
 
 export class Service{
     client =new Client();
@@ -9,24 +10,31 @@ export class Service{
         this.client.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
         this.databases=new Databases(this.client);
     }
-    async createProblem(data){
-        try{
-            return await this.databases.createDocument(
-                conf.appwriteDatabaseId,
-                conf.appwriteCollectionId,
-                ID.unique(),
-                data
-            )
-        }catch (error){
-            console.log("Appwrite service :: createProblem :: error",error);
-        }
-        
+   async createProblem(data, userId){
+    try{
+        return await this.databases.createDocument(
+            conf.appwriteDatabaseId,
+            conf.appwriteCollectionId,
+            ID.unique(),
+            data,
+            [
+                Permission.read(Role.user(userId)),
+                Permission.update(Role.user(userId)),
+                Permission.delete(Role.user(userId)),
+            ]
+        )
+    }catch (error){
+        console.log("Appwrite service :: createProblem :: error", error);
     }
+}
        async getProblems(){
         try{
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
+                   [
+              Query.equal("userId", userId)  //  MAIN FIX
+                  ]
                
             )
         }catch (error){

@@ -38,11 +38,13 @@ function Addproblem({ problem, onAdd, onClose }) {
         toast.success("Problem updated successfully ✏️")
       } else {
         //  ADD MODE
-        await service.createProblem({
-          ...data,
-          userId: user.$id,
-          
-        })
+        await service.createProblem(
+          {
+            ...data,
+            userId: user.$id,
+           },
+          user.$id
+          )
       toast.success("Problem Added 🚀")
       }
 

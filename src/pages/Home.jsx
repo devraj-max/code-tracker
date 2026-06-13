@@ -23,8 +23,8 @@ function Home() {
   //  fetch function (reusable)
   const fetchProblems = () => {
     setLoading(true)
-
-    service.getProblems().then((res) => {
+    const user = await authService.getCurrentUser()
+    service.getProblems(user.$id).then((res) => {
       console.log(res)
 
       if (res) {
