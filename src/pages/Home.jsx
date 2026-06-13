@@ -132,39 +132,52 @@ console.log("LOGGED USER ID:", user.$id)
   }
 
 
-  //user active data
-  const dates = problems.map(p =>
-    (p.$createdAt || "").slice(0, 10)
-  )
+ // user active data
+const dates = problems.map(p =>
+  (p.$createdAt || "").slice(0, 10)
+)
 
-  const uniqueDates = [...new Set(dates)].sort()
-  const totalActiveDays = uniqueDates.length
+// unique + proper sort
+const uniqueDates = [...new Set(dates)]
+  .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
 
-  let maxStreak = 0
-  let currentStreak = 1
+let maxStreak = 0
+let currentStreak = 0
 
-  // logic for store maxstreak 
+if (uniqueDates.length > 0) {
+  currentStreak = 1
+  maxStreak = 1
+
   for (let i = 1; i < uniqueDates.length; i++) {
     const prev = new Date(uniqueDates[i - 1])
     const cur = new Date(uniqueDates[i])
-    const diff = (cur - prev) / (1000 * 60 * 60 * 24)
+
+    const diff = Math.round(
+      (cur - prev) / (1000 * 60 * 60 * 24)
+    )
+
     if (diff === 1) {
-      currentStreak++;
+      currentStreak++
     } else {
-      currentStreak = 1;
+      currentStreak = 1
     }
+
     maxStreak = Math.max(maxStreak, currentStreak)
   }
+}
 
-  // for last 30 days active
-  const now = new Date()
-  //filter jo conditon statisfy kre usko return kr do
-  const last30 = uniqueDates.filter(d => {
-    const diff = (now - new Date(d)) / (1000 * 60 * 60 * 24)
-    return diff <= 30
-  })
+const totalActiveDays = uniqueDates.length
 
-  const last30ActiveDays = last30.length
+// last 30 days active
+const now = new Date()
+
+const last30 = uniqueDates.filter(d => {
+  const diff = (now - new Date(d)) / (1000 * 60 * 60 * 24)
+  return diff <= 30
+})
+
+const last30ActiveDays = last30.length
+
 
   //  loading state
   if (loading) {
