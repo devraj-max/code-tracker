@@ -132,7 +132,7 @@ console.log("LOGGED USER ID:", user.$id)
   }
 
 
- // user active data
+// user active data
 const dates = problems.map(p =>
   (p.$createdAt || "").slice(0, 10)
 )
@@ -177,7 +177,6 @@ const last30 = uniqueDates.filter(d => {
 })
 
 const last30ActiveDays = last30.length
-
 
   //  loading state
   if (loading) {
