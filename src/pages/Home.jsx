@@ -22,12 +22,12 @@ function Home() {
 
   //  fetch function (reusable)
 
-  
+
 const fetchProblems = async () => {
   setLoading(true)
 
   const user = await authService.getCurrentUser()
-
+console.log("LOGGED USER ID:", user.$id)
   if (!user) {
     setProblems([])
     setLoading(false)
@@ -147,7 +147,7 @@ const fetchProblems = async () => {
   for (let i = 1; i < uniqueDates.length; i++) {
     const prev = new Date(uniqueDates[i - 1])
     const cur = new Date(uniqueDates[i])
-    const diff = (prev - cur) / (1000 * 60 * 60 * 24)
+    const diff = (cur - prev) / (1000 * 60 * 60 * 24)
     if (diff === 1) {
       currentStreak++;
     } else {
