@@ -1,6 +1,5 @@
 import conf from "../conf/conf";
 import { Client,ID,Storage,Query, Databases,Permission,Role} from "appwrite";
-import { Query } from "appwrite";
 
 export class Service{
     client =new Client();
@@ -43,7 +42,7 @@ async getProblems(userId){
             conf.appwriteCollectionId,
             [
                 Query.equal("userId", userId) //  now valid main fix yha krna tha
-                
+
             ]
         )
     }catch (error){
